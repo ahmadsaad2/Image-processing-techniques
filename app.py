@@ -51,7 +51,11 @@ class ImageSegmentationApp(QMainWindow):
 
         a45n_line_detection= QPushButton("-45 Line Detection",self)
         a45n_line_detection.clicked.connect(self.a45n_line_detection1)
+        
 
+
+        laplacian_log= QPushButton("Laplacian of Gaussian (log)",self)
+        laplacian_log.clicked.connect(self.laplacian_log)
 
         user_defined_filter_button = QPushButton("User-Defined Filter", self)
         user_defined_filter_button.clicked.connect(self.user_defined_filter)
@@ -66,6 +70,7 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(vertical_line_detection)
         layout.addWidget(a45p_line_detection)
         layout.addWidget(a45n_line_detection)
+        layout.addWidget(laplacian_log)
         layout.addWidget(user_defined_filter_button)
         layout.addWidget(save_button)
         layout.addWidget(self.image_label)
@@ -141,6 +146,17 @@ class ImageSegmentationApp(QMainWindow):
             self.display_image = cv2.filter2D(self.original_image, -1, kernel)
             self.update_image_label()  
 
+
+    def laplacian_log(self):
+        if self.original_image is not None:
+            kernel = np.array([[0,0, -1,0,0],
+                               [0,-1,-2,-1,0],
+                               [-1,-2,16,-2,-1],
+                               [0,-1,-2,-1,0],
+                               [0,0,-1,0,0]], dtype=np.float32)
+
+            self.display_image = cv2.filter2D(self.original_image, -1, kernel)
+            self.update_image_label()  
     
     def apply_point_detection(self):
         if self.original_image is not None:
