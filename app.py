@@ -2,6 +2,8 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QPushButton, QFileDialog, QSlider, QWidget, QGridLayout, QInputDialog
 from PyQt5.QtGui import QPixmap, QImage, QImageReader
 import cv2
+import scipy
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QSize
 
@@ -56,6 +58,11 @@ class ImageSegmentationApp(QMainWindow):
 
         laplacian_log= QPushButton("Laplacian of Gaussian (log)",self)
         laplacian_log.clicked.connect(self.laplacian_log)
+        
+
+        zero_crossing_button = QPushButton("Zero Crossing", self)
+        zero_crossing_button.clicked.connect(self.zero_crossing_button_clicked)
+
 
         user_defined_filter_button = QPushButton("User-Defined Filter", self)
         user_defined_filter_button.clicked.connect(self.user_defined_filter)
@@ -71,6 +78,7 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(a45p_line_detection)
         layout.addWidget(a45n_line_detection)
         layout.addWidget(laplacian_log)
+        layout.addWidget(zero_crossing_button)
         layout.addWidget(user_defined_filter_button)
         layout.addWidget(save_button)
         layout.addWidget(self.image_label)
@@ -166,7 +174,35 @@ class ImageSegmentationApp(QMainWindow):
 
             self.display_image = cv2.filter2D(self.original_image, -1, kernel)
             self.update_image_label()
+    
 
+
+    def zero_crossing_button_clicked(self):
+        if self.original_image is not None:
+            if len(self.display_image.shape) == 3:
+                grayscale_image = cv2.cvtColor(self.display_image, cv2.COLOR_BGR2GRAY)
+            else:
+                grayscale_image = self.display_image
+
+            zero_crossing_img = self.zero_crossing_detection(grayscale_image)
+
+            self.display_image = zero_crossing_img
+            self.update_image_label()
+
+    def zero_crossing_detection(self, image):
+        LoG_kernel = np.array([
+            [0, 0, 1, 0, 0],
+            [0, 1, 2, 1, 0],
+            [1, 2, -16, 2, 1],
+            [0, 1, 2, 1, 0],
+            [0, 0, 1, 0, 0]
+        ])
+        log_img = scipy.ndimage.convolve(image.astype(float), LoG_kernel)
+
+        zero_crossing_log = np.zeros_like(log_img)
+        zero_crossing_log[log_img > 0] = 255
+
+        return zero_crossing_log
     def user_defined_filter(self):
       if self.original_image is not None:
         size, ok = QInputDialog.getInt(self, "Filter Size", "Enter filter size:", 3, 1, 11, 2)
