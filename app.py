@@ -41,6 +41,17 @@ class ImageSegmentationApp(QMainWindow):
         horizontal_line_detection_button = QPushButton("Horizontal Line Detection", self)
         horizontal_line_detection_button.clicked.connect(self.apply_horizontal_line_detection)
 
+        vertical_line_detection= QPushButton("Vertical Line Detection",self)
+        vertical_line_detection.clicked.connect(self.vertical_line_detection)
+
+
+        a45p_line_detection= QPushButton("+45 Line Detection",self)
+        a45p_line_detection.clicked.connect(self.a45p_line_detection1)
+
+
+        a45n_line_detection= QPushButton("-45 Line Detection",self)
+        a45n_line_detection.clicked.connect(self.a45n_line_detection1)
+
 
         user_defined_filter_button = QPushButton("User-Defined Filter", self)
         user_defined_filter_button.clicked.connect(self.user_defined_filter)
@@ -52,6 +63,9 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(grayscale_button)
         layout.addWidget(point_detection_button)
         layout.addWidget(horizontal_line_detection_button)
+        layout.addWidget(vertical_line_detection)
+        layout.addWidget(a45p_line_detection)
+        layout.addWidget(a45n_line_detection)
         layout.addWidget(user_defined_filter_button)
         layout.addWidget(save_button)
         layout.addWidget(self.image_label)
@@ -78,7 +92,6 @@ class ImageSegmentationApp(QMainWindow):
                 self.original_image = cv2.imread(file_path)
                 self.display_image = self.original_image.copy()
                 self.update_image_label()
-
             else:
                 print("Invalid image file.")
 
@@ -96,7 +109,37 @@ class ImageSegmentationApp(QMainWindow):
 
             self.display_image = cv2.filter2D(self.original_image, -1, kernel)
             self.update_image_label()
-    
+
+
+    def vertical_line_detection(self):
+        if self.original_image is not None:
+            kernel = np.array([[-1, 2, -1],
+                               [-1, 2, -1],
+                               [-1, 2, -1]], dtype=np.float32)
+
+            self.display_image = cv2.filter2D(self.original_image, -1, kernel)
+            self.update_image_label()
+
+
+
+    def a45p_line_detection1(self):
+        if self.original_image is not None:
+            kernel = np.array([[-1, -1, 2],
+                               [-1, 2, -1],
+                               [2, -1, -1]], dtype=np.float32)
+
+            self.display_image = cv2.filter2D(self.original_image, -1, kernel)
+            self.update_image_label()
+
+
+    def a45n_line_detection1(self):
+        if self.original_image is not None:
+            kernel = np.array([[2, -1, -1],
+                               [-1, 2, -1],
+                               [-1, -1, 2]], dtype=np.float32)
+
+            self.display_image = cv2.filter2D(self.original_image, -1, kernel)
+            self.update_image_label()  
 
     
     def apply_point_detection(self):
