@@ -88,7 +88,17 @@ class ImageSegmentationApp(QMainWindow):
             self.update_image_label()
     
 
+    def apply_horizontal_line_detection(self):
+        if self.original_image is not None:
+            kernel = np.array([[-1, -1, -1],
+                               [2,  2,  2],
+                               [-1, -1, -1]], dtype=np.float32)
 
+            self.display_image = cv2.filter2D(self.original_image, -1, kernel)
+            self.update_image_label()
+    
+
+    
     def apply_point_detection(self):
         if self.original_image is not None:
             kernel = np.array([[-1, -1, -1],
