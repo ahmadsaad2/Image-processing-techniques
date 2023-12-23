@@ -61,7 +61,15 @@ class ImageSegmentationApp(QMainWindow):
         laplacian_button = QPushButton("Laplacian Filter", self)
         laplacian_button.clicked.connect(self.apply_laplacian_filter)
 
+        plus_45_edge_detection_button = QPushButton("+45 Edge Detection", self)
+        plus_45_edge_detection_button.clicked.connect(self.apply_plus_45_edge_detection)
 
+
+
+        minus_45_edge_detection_button = QPushButton("-45 Edge Detection", self)
+        minus_45_edge_detection_button.clicked.connect(self.apply_minus_45_edge_detection)
+
+        
         laplacian_log= QPushButton("Laplacian of Gaussian (log)",self)
         laplacian_log.clicked.connect(self.laplacian_log)
         
@@ -90,6 +98,8 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(vertical_line_detection)
         layout.addWidget(a45p_line_detection)
         layout.addWidget(a45n_line_detection)
+        layout.addWidget(plus_45_edge_detection_button)
+        layout.addWidget(minus_45_edge_detection_button)
         layout.addWidget(laplacian_button)
         layout.addWidget(laplacian_log)
         layout.addWidget(zero_crossing_button)
@@ -101,7 +111,7 @@ class ImageSegmentationApp(QMainWindow):
 
         central_widget.setLayout(layout)
 
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(300, 300, 800, 2000)
         self.setWindowTitle("Image Segmentation App")
 
     def open_image(self):
@@ -151,7 +161,6 @@ class ImageSegmentationApp(QMainWindow):
         if self.original_image is not None:
             grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
 
-            # Apply Adaptive Thresholding
             adaptive_threshold_img = cv2.adaptiveThreshold(
                 grayscale_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
             )
@@ -196,6 +205,24 @@ class ImageSegmentationApp(QMainWindow):
                                          [-1, 0, 1]])
 
         self.display_image = cv2.filter2D(self.original_image, -1, vertical_edge_filter)
+        self.update_image_label()
+
+    def apply_plus_45_edge_detection(self):
+        if self.original_image is not None:
+            plus_45_edge_filter = np.array([[-2, -1, 0],
+                                        [-1,  0, 1],
+                                        [0, 1, 2]])
+
+        self.display_image = cv2.filter2D(self.original_image, -1, plus_45_edge_filter)
+        self.update_image_label()
+
+    def apply_minus_45_edge_detection(self):
+        if self.original_image is not None:
+            minus_45_edge_filter = np.array([[0, 1, 2],
+                                         [-1,  0, 1],
+                                         [-2, -1,  0]])
+
+        self.display_image = cv2.filter2D(self.original_image, -1, minus_45_edge_filter)
         self.update_image_label()
 
 
