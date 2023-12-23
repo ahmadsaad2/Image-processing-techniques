@@ -54,6 +54,8 @@ class ImageSegmentationApp(QMainWindow):
         a45n_line_detection= QPushButton("-45 Line Detection",self)
         a45n_line_detection.clicked.connect(self.a45n_line_detection1)
         
+        laplacian_button = QPushButton("Laplacian Filter", self)
+        laplacian_button.clicked.connect(self.apply_laplacian_filter)
 
 
         laplacian_log= QPushButton("Laplacian of Gaussian (log)",self)
@@ -77,6 +79,7 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(vertical_line_detection)
         layout.addWidget(a45p_line_detection)
         layout.addWidget(a45n_line_detection)
+        layout.addWidget(laplacian_button)
         layout.addWidget(laplacian_log)
         layout.addWidget(zero_crossing_button)
         layout.addWidget(user_defined_filter_button)
@@ -154,6 +157,41 @@ class ImageSegmentationApp(QMainWindow):
             self.display_image = cv2.filter2D(self.original_image, -1, kernel)
             self.update_image_label()  
 
+    def zero_crossing_button_clicked(self):
+        if self.original_image is not None:
+            grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
+
+            log_filtered = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
+            log_filtered = cv2.Laplacian(log_filtered, cv2.CV_64F)
+
+            zero_crossing_img = self.zero_crossing_detection(log_filtered)
+
+            self.display_image = zero_crossing_img
+            self.update_image_label()
+
+    def zero_crossing_detection(self, image):
+        rows, cols = image.shape
+        zero_crossing_img = np.zeros((rows, cols), dtype=np.uint8)
+
+        for i in range(1, rows - 1):
+            for j in range(1, cols - 1):
+                neighbors = [image[i - 1, j], image[i + 1, j], image[i, j - 1], image[i, j + 1],
+                             image[i - 1, j - 1], image[i - 1, j + 1], image[i + 1, j - 1], image[i + 1, j + 1]]
+                if np.prod(np.sign(neighbors)) < 0:
+                    zero_crossing_img[i, j] = 255
+
+        return zero_crossing_img
+
+    def apply_laplacian_filter(self):
+        if self.original_image is not None:
+            grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
+            laplacian_filtered = cv2.Laplacian(grayscale_image, cv2.CV_64F)
+
+            # Normalize the result to display as an image
+            laplacian_filtered = cv2.normalize(laplacian_filtered, None, 0, 255, cv2.NORM_MINMAX)
+
+            self.display_image = laplacian_filtered.astype(np.uint8)
+            self.update_image_label()
 
     def laplacian_log(self):
         if self.original_image is not None:
@@ -177,32 +215,7 @@ class ImageSegmentationApp(QMainWindow):
     
 
 
-    def zero_crossing_button_clicked(self):
-        if self.original_image is not None:
-            if len(self.display_image.shape) == 3:
-                grayscale_image = cv2.cvtColor(self.display_image, cv2.COLOR_BGR2GRAY)
-            else:
-                grayscale_image = self.display_image
 
-            zero_crossing_img = self.zero_crossing_detection(grayscale_image)
-
-            self.display_image = zero_crossing_img
-            self.update_image_label()
-
-    def zero_crossing_detection(self, image):
-        LoG_kernel = np.array([
-            [0, 0, 1, 0, 0],
-            [0, 1, 2, 1, 0],
-            [1, 2, -16, 2, 1],
-            [0, 1, 2, 1, 0],
-            [0, 0, 1, 0, 0]
-        ])
-        log_img = scipy.ndimage.convolve(image.astype(float), LoG_kernel)
-
-        zero_crossing_log = np.zeros_like(log_img)
-        zero_crossing_log[log_img > 0] = 255
-
-        return zero_crossing_log
     def user_defined_filter(self):
       if self.original_image is not None:
         size, ok = QInputDialog.getInt(self, "Filter Size", "Enter filter size:", 3, 1, 11, 2)
