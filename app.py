@@ -30,64 +30,103 @@ class ImageSegmentationApp(QMainWindow):
         layout = QVBoxLayout()
 
         open_button = QPushButton("Open Image", self)
+        open_button.setFixedWidth(250)
         open_button.clicked.connect(self.open_image)
+        self.apply_common_style(open_button)
+
+
 
         grayscale_button = QPushButton("Convert to Grayscale", self)
         grayscale_button.clicked.connect(self.convert_to_grayscale)
+        grayscale_button.setFixedWidth(250)
+        self.apply_common_style(grayscale_button)
+
+        
 
         
         point_detection_button = QPushButton("Point Detection", self)
+        point_detection_button.setFixedWidth(250)
+        self.apply_common_style(point_detection_button)
         point_detection_button.clicked.connect(self.apply_point_detection)
 
         horizontal_edge_detection_button = QPushButton("Horizontal Edge Detection", self)
         horizontal_edge_detection_button.clicked.connect(self.apply_horizontal_edge_detection)
+        horizontal_edge_detection_button.setFixedWidth(250)
+        self.apply_common_style(horizontal_edge_detection_button)
 
+        
         horizontal_line_detection_button = QPushButton("Horizontal Line Detection", self)
         horizontal_line_detection_button.clicked.connect(self.apply_horizontal_line_detection)
+        horizontal_line_detection_button.setFixedWidth(250)
+        self.apply_common_style(horizontal_line_detection_button)
 
         vertical_line_detection= QPushButton("Vertical Line Detection",self)
         vertical_line_detection.clicked.connect(self.vertical_line_detection)
+        vertical_line_detection.setFixedWidth(250)
+        self.apply_common_style(vertical_line_detection)
 
-        
         vertical_edge_detection_button = QPushButton("Vertical Edge Detection", self)
         vertical_edge_detection_button.clicked.connect(self.apply_vertical_edge_detection)
+        vertical_edge_detection_button.setFixedWidth(250)
+        self.apply_common_style(vertical_edge_detection_button)
+        
+
         a45p_line_detection= QPushButton("+45 Line Detection",self)
         a45p_line_detection.clicked.connect(self.a45p_line_detection1)
+        a45p_line_detection.setFixedWidth(250)
+        self.apply_common_style(a45p_line_detection)
 
 
         a45n_line_detection= QPushButton("-45 Line Detection",self)
         a45n_line_detection.clicked.connect(self.a45n_line_detection1)
-        
+        a45n_line_detection.setFixedWidth(250)
+        self.apply_common_style(a45n_line_detection)
+
         laplacian_button = QPushButton("Laplacian Filter", self)
         laplacian_button.clicked.connect(self.apply_laplacian_filter)
+        laplacian_button.setFixedWidth(250)
+        self.apply_common_style(laplacian_button)
 
         plus_45_edge_detection_button = QPushButton("+45 Edge Detection", self)
         plus_45_edge_detection_button.clicked.connect(self.apply_plus_45_edge_detection)
-
+        plus_45_edge_detection_button.setFixedWidth(250)
+        self.apply_common_style(plus_45_edge_detection_button)
 
 
         minus_45_edge_detection_button = QPushButton("-45 Edge Detection", self)
         minus_45_edge_detection_button.clicked.connect(self.apply_minus_45_edge_detection)
-
-        
+        minus_45_edge_detection_button.setFixedWidth(250)
+        self.apply_common_style(minus_45_edge_detection_button)
+       
         laplacian_log= QPushButton("Laplacian of Gaussian (log)",self)
         laplacian_log.clicked.connect(self.laplacian_log)
-        
+        laplacian_log.setFixedWidth(250)
+        self.apply_common_style(laplacian_log)
 
         zero_crossing_button = QPushButton("Zero Crossing", self)
         zero_crossing_button.clicked.connect(self.zero_crossing_button_clicked)
+        zero_crossing_button.setFixedWidth(250)
+        self.apply_common_style(zero_crossing_button)
 
         threshold_button = QPushButton("Apply Threshold", self)
         threshold_button.clicked.connect(self.apply_threshold)
-        
+        threshold_button.setFixedWidth(250)
+        self.apply_common_style(threshold_button)
+
         adaptive_threshold_button = QPushButton("Adaptive Threshold", self)
         adaptive_threshold_button.clicked.connect(self.apply_adaptive_threshold)
+        adaptive_threshold_button.setFixedWidth(250)
+        self.apply_common_style(adaptive_threshold_button)
 
         user_defined_filter_button = QPushButton("User-Defined Filter", self)
         user_defined_filter_button.clicked.connect(self.user_defined_filter)
+        user_defined_filter_button.setFixedWidth(250)
+        self.apply_common_style(user_defined_filter_button)
 
         save_button = QPushButton("Save Image", self)
         save_button.clicked.connect(self.save_image)
+        save_button.setFixedWidth(250)
+        self.apply_common_style(save_button)
 
         layout.addWidget(open_button)
         layout.addWidget(grayscale_button)
@@ -111,7 +150,7 @@ class ImageSegmentationApp(QMainWindow):
 
         central_widget.setLayout(layout)
 
-        self.setGeometry(300, 300, 800, 2000)
+        self.setGeometry(300, 300, 800, 3000)
         self.setWindowTitle("Image Segmentation App")
 
     def open_image(self):
@@ -294,15 +333,13 @@ class ImageSegmentationApp(QMainWindow):
             self.update_image_label()
 
     def user_defined_filter(self):
-      if self.original_image is not None:
-        size, ok = QInputDialog.getInt(self, "Filter Size", "Enter filter size:", 3, 1, 11, 2)
+        if self.original_image is not None:
+            size, ok = QInputDialog.getInt(self, "Filter Size", "Enter filter size:", 3, 1, 11, 2)
         if ok:
             coefficients_str, ok = QInputDialog.getText(self, "Filter Coefficients", "Enter filter coefficients (comma-separated):")
             if ok:
-                coefficients = coefficients_str.split(',')
-                
                 try:
-                    coefficients = [float(x.strip()) for x in coefficients]
+                    coefficients = [float(x.strip()) for x in coefficients_str.split(',')]
                 except ValueError:
                     print("Invalid coefficients. Please enter valid numeric values.")
                     return
@@ -344,6 +381,30 @@ class ImageSegmentationApp(QMainWindow):
           pixmap = QPixmap.fromImage(q_image)
           self.image_label.setPixmap(pixmap.scaled(self.image_label.size(), Qt.KeepAspectRatio))
 
+    def apply_common_style(self, button):
+        button.setObjectName("bn30")  # Set an object name to match the CSS selector
+        button.clicked.connect(self.stylish_button_clicked)
+        button.setStyleSheet("""
+            #bn30 {
+                border: 5em;
+                cursor: pointer;
+                outline: none;
+                font-size: 13px;
+                -webkit-transform: translate(0);
+                transform: translate(0);
+                background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+                padding: 0.3em 2em;
+                border-radius: 65px;
+                box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438);
+                -webkit-transition: box-shadow 0.25s;
+                transition: box-shadow 0.25s;
+                color: red;
+                background-color:black;
+            }
+        """)
+
+    def stylish_button_clicked(self):
+        print("Stylish button clicked!")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
