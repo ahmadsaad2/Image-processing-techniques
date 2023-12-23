@@ -39,6 +39,8 @@ class ImageSegmentationApp(QMainWindow):
         point_detection_button = QPushButton("Point Detection", self)
         point_detection_button.clicked.connect(self.apply_point_detection)
 
+        horizontal_edge_detection_button = QPushButton("Horizontal Edge Detection", self)
+        horizontal_edge_detection_button.clicked.connect(self.apply_horizontal_edge_detection)
 
         horizontal_line_detection_button = QPushButton("Horizontal Line Detection", self)
         horizontal_line_detection_button.clicked.connect(self.apply_horizontal_line_detection)
@@ -46,7 +48,9 @@ class ImageSegmentationApp(QMainWindow):
         vertical_line_detection= QPushButton("Vertical Line Detection",self)
         vertical_line_detection.clicked.connect(self.vertical_line_detection)
 
-
+        
+        vertical_edge_detection_button = QPushButton("Vertical Edge Detection", self)
+        vertical_edge_detection_button.clicked.connect(self.apply_vertical_edge_detection)
         a45p_line_detection= QPushButton("+45 Line Detection",self)
         a45p_line_detection.clicked.connect(self.a45p_line_detection1)
 
@@ -80,7 +84,9 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(open_button)
         layout.addWidget(grayscale_button)
         layout.addWidget(point_detection_button)
+        layout.addWidget(horizontal_edge_detection_button)
         layout.addWidget(horizontal_line_detection_button)
+        layout.addWidget(vertical_edge_detection_button)
         layout.addWidget(vertical_line_detection)
         layout.addWidget(a45p_line_detection)
         layout.addWidget(a45n_line_detection)
@@ -123,6 +129,14 @@ class ImageSegmentationApp(QMainWindow):
             self.display_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
             self.update_image_label()
     
+    def apply_horizontal_edge_detection(self):
+        if self.original_image is not None:
+            horizontal_edge_filter = np.array([[-1, -2, -1],
+                                           [0, 0, 0],
+                                           [1, 2, 1]])
+
+        self.display_image = cv2.filter2D(self.original_image, -1, horizontal_edge_filter)
+        self.update_image_label()
 
     def apply_horizontal_line_detection(self):
         if self.original_image is not None:
@@ -174,6 +188,16 @@ class ImageSegmentationApp(QMainWindow):
 
             self.display_image = cv2.filter2D(self.original_image, -1, kernel)
             self.update_image_label()  
+    
+    def apply_vertical_edge_detection(self):
+        if self.original_image is not None:
+            vertical_edge_filter = np.array([[-1, 0, 1],
+                                         [-2, 0, 2],
+                                         [-1, 0, 1]])
+
+        self.display_image = cv2.filter2D(self.original_image, -1, vertical_edge_filter)
+        self.update_image_label()
+
 
     def zero_crossing_button_clicked(self):
         if self.original_image is not None:
