@@ -65,6 +65,11 @@ class ImageSegmentationApp(QMainWindow):
         zero_crossing_button = QPushButton("Zero Crossing", self)
         zero_crossing_button.clicked.connect(self.zero_crossing_button_clicked)
 
+        threshold_button = QPushButton("Apply Threshold", self)
+        threshold_button.clicked.connect(self.apply_threshold)
+        
+        adaptive_threshold_button = QPushButton("Adaptive Threshold", self)
+        adaptive_threshold_button.clicked.connect(self.apply_adaptive_threshold)
 
         user_defined_filter_button = QPushButton("User-Defined Filter", self)
         user_defined_filter_button.clicked.connect(self.user_defined_filter)
@@ -82,6 +87,8 @@ class ImageSegmentationApp(QMainWindow):
         layout.addWidget(laplacian_button)
         layout.addWidget(laplacian_log)
         layout.addWidget(zero_crossing_button)
+        layout.addWidget(threshold_button)
+        layout.addWidget(adaptive_threshold_button)
         layout.addWidget(user_defined_filter_button)
         layout.addWidget(save_button)
         layout.addWidget(self.image_label)
@@ -126,6 +133,17 @@ class ImageSegmentationApp(QMainWindow):
             self.display_image = cv2.filter2D(self.original_image, -1, kernel)
             self.update_image_label()
 
+    def apply_adaptive_threshold(self):
+        if self.original_image is not None:
+            grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
+
+            # Apply Adaptive Thresholding
+            adaptive_threshold_img = cv2.adaptiveThreshold(
+                grayscale_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+            )
+
+            self.display_image = adaptive_threshold_img
+            self.update_image_label()
 
     def vertical_line_detection(self):
         if self.original_image is not None:
@@ -214,7 +232,15 @@ class ImageSegmentationApp(QMainWindow):
             self.update_image_label()
     
 
+    def apply_threshold(self):
+        if self.original_image is not None:
+            grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
 
+            # You can set a threshold value here (for example, 127)
+            _, thresholded_img = cv2.threshold(grayscale_image, 127, 255, cv2.THRESH_BINARY)
+
+            self.display_image = thresholded_img
+            self.update_image_label()
 
     def user_defined_filter(self):
       if self.original_image is not None:
