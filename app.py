@@ -200,12 +200,29 @@ class ImageSegmentationApp(QMainWindow):
         if self.original_image is not None:
             grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
 
-            adaptive_threshold_img = cv2.adaptiveThreshold(
-                grayscale_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-            )
+        block_size, ok1 = QInputDialog.getInt(self, "Adaptive Threshold", "Enter block size (must be odd):", 11, 3, 101, 2)
+        if not ok1:
+            return  
 
-            self.display_image = adaptive_threshold_img
-            self.update_image_label()
+        if block_size % 2 == 0:
+            print("Block size must be an odd number. Adding 1 to make it odd.")
+            block_size += 1
+
+        constant_value, ok2 = QInputDialog.getDouble(self, "Adaptive Threshold", "Enter constant value:", 2, 0, 255, 1)
+        if not ok2:
+            return  
+
+        
+        adaptive_threshold_img = cv2.adaptiveThreshold(
+            grayscale_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, block_size, constant_value
+        )
+
+        self.display_image = adaptive_threshold_img
+        self.update_image_label()
+
+
+        self.display_image = adaptive_threshold_img
+        self.update_image_label()
 
     def vertical_line_detection(self):
         if self.original_image is not None:
