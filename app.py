@@ -49,7 +49,7 @@ class ImageSegmentationApp(QMainWindow):
         self.apply_common_style(point_detection_button)
         point_detection_button.clicked.connect(self.apply_point_detection)
 
-        horizontal_edge_detection_button = QPushButton("Horizontal Edge Detection", self)
+        horizontal_edge_detection_button = QPushButton("Horizontal Edge Detection(sobel)", self)
         horizontal_edge_detection_button.clicked.connect(self.apply_horizontal_edge_detection)
         horizontal_edge_detection_button.setFixedWidth(250)
         self.apply_common_style(horizontal_edge_detection_button)
@@ -65,7 +65,7 @@ class ImageSegmentationApp(QMainWindow):
         vertical_line_detection.setFixedWidth(250)
         self.apply_common_style(vertical_line_detection)
 
-        vertical_edge_detection_button = QPushButton("Vertical Edge Detection", self)
+        vertical_edge_detection_button = QPushButton("Vertical Edge Detection (sobel)", self)
         vertical_edge_detection_button.clicked.connect(self.apply_vertical_edge_detection)
         vertical_edge_detection_button.setFixedWidth(250)
         self.apply_common_style(vertical_edge_detection_button)
@@ -87,13 +87,13 @@ class ImageSegmentationApp(QMainWindow):
         laplacian_button.setFixedWidth(250)
         self.apply_common_style(laplacian_button)
 
-        plus_45_edge_detection_button = QPushButton("+45 Edge Detection", self)
+        plus_45_edge_detection_button = QPushButton("+45 Edge Detection (sobel) ", self)
         plus_45_edge_detection_button.clicked.connect(self.apply_plus_45_edge_detection)
         plus_45_edge_detection_button.setFixedWidth(250)
         self.apply_common_style(plus_45_edge_detection_button)
 
 
-        minus_45_edge_detection_button = QPushButton("-45 Edge Detection", self)
+        minus_45_edge_detection_button = QPushButton("-45 Edge Detection (sobel)", self)
         minus_45_edge_detection_button.clicked.connect(self.apply_minus_45_edge_detection)
         minus_45_edge_detection_button.setFixedWidth(250)
         self.apply_common_style(minus_45_edge_detection_button)
@@ -326,11 +326,15 @@ class ImageSegmentationApp(QMainWindow):
         if self.original_image is not None:
             grayscale_image = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY)
 
-            # You can set a threshold value here (for example, 127)
-            _, thresholded_img = cv2.threshold(grayscale_image, 127, 255, cv2.THRESH_BINARY)
+            threshold_value, ok = QInputDialog.getInt(self, "Threshold", "Enter the threshold value:", 120, 0, 255, 1)
+            if not ok:
+                return  
+
+            _, thresholded_img = cv2.threshold(grayscale_image, threshold_value, 255, cv2.THRESH_BINARY)
 
             self.display_image = thresholded_img
             self.update_image_label()
+
 
     def user_defined_filter(self):
         if self.original_image is not None:
