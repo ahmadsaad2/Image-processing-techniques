@@ -45,9 +45,19 @@ The Image Processing Techniques App is a versatile Python application designed t
 
 14. **Vertical Edge Detection:**
     - Identifies edges in the vertical direction.
+15- Prewitt Horizontal Edge Detection:
 
-15. **Glowing Button Style:**
-    - Adds a stylish glow effect to buttons for an enhanced visual experience.
+16- The Prewitt Horizontal Edge Detection filter :
+is a powerful tool designed to identify horizontal edges and structures within an image.
+
+17- Prewitt Vertical Edge Detection:
+The Prewitt Vertical Edge Detection filter is tailored for revealing vertical edges and structures within an image. Utilizing a convolution kernel that accentuates changes in intensity along the vertical direction.
+
+18- Prewitt Diagonal -45° Edge Detection:
+The Prewitt Diagonal -45° Edge Detection filter specializes in identifying edges and structures oriented at a negative 45-degree angle. By applying a specific convolution kernel.
+
+19- Prewitt Diagonal +45° Edge Detection:
+The Prewitt Diagonal +45° Edge Detection filter excels in detecting edges and structures oriented at a positive 45-degree angle. 
 
 **Usage:**
 - Open an image.
@@ -62,4 +72,6 @@ The Image Processing Techniques App is a versatile Python application designed t
 - Versatility in image processing applications.
 - Enables users to experiment with various filters for creative and analytical purposes.
 
-- ![image](https://github.com/ahmadsaad2/Image-processing-techniques/assets/137313539/0fc1cced-cc92-454c-a129-8724e014e5c5)
+![image](https://github.com/ahmadsaad2/Image-processing-techniques/assets/137313539/b3a6d8e5-25ba-4abb-91e1-1bd1bcba6552)
+
+
